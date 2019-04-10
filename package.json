@@ -1,0 +1,37 @@
+{
+  "name": "projectmarketplace",
+  "version": "1.0.0",
+  "description": "Marketplace Project for SSSF course",
+  "main": "server.js",
+  "scripts": {
+    "start": "node servers.js",
+    "dev": "nodemon servers.js",
+    "test": "jest --coverage --forceExit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mikhailosev/ProjectMarketplace.git"
+  },
+  "author": "Mikhail Losev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mikhailosev/ProjectMarketplace/issues"
+  },
+  "homepage": "https://github.com/Mikhailosev/ProjectMarketplace#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "bulma": "^0.7.4",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^7.0.0",
+    "ejs": "^2.6.1",
+    "ejs-lint": "^0.3.0",
+    "express": "^4.16.4",
+    "express-ejs-layouts": "^2.5.0",
+    "express-session": "^1.15.6",
+    "fs": "0.0.1-security",
+    "hbs": "^4.0.3",
+    "mongoose": "^5.5.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
+  }
+}
