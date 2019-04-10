@@ -1,0 +1,58 @@
+<% if(typeof errors !='undefined') { %>
+<% errors.forEach(function(error){ %>
+    <div class="notification is-danger">
+            <button class="delete is-small"></button>
+            <strong> <%= error.msg %></strong>
+          </div>
+
+<% }) %>
+<% } %>
+
+<% if(success_msg!=     '') { %>
+    <div class="notification is-success">
+            <button class="delete is-small"></button>
+            <strong> <%= success_msg %></strong>
+          </div>
+<% } %>
+<% if(error_msg!='') { %>
+    <div class="notification is-warning">
+            <button class="delete is-small"></button>
+            <strong> <%= error_msg %></strong>
+          </div>
+<% } %>
+<% if(error!='') { %>
+    <div class="notification is-warning">
+            <button class="delete is-small"></button>
+            <strong> <%= error %></strong>
+          </div>
+<% } %>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+    (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+      $notification = $delete.parentNode;
+      $delete.addEventListener('click', () => {
+        $notification.parentNode.removeChild($notification);
+      });
+    });
+  });
+</script>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+        (document.querySelectorAll('.notification .is-warning') || []).forEach(($delete) => {
+          $notification = $delete.parentNode;
+          $delete.addEventListener('click', () => {
+            $notification.parentNode.removeChild($notification);
+          });
+        });
+      });
+    </script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            (document.querySelectorAll('.notification .is-success') || []).forEach(($delete) => {
+              $notification = $delete.parentNode;
+              $delete.addEventListener('click', () => {
+                $notification.parentNode.removeChild($notification);
+              });
+            });
+          });
+        </script>

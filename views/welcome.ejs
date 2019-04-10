@@ -1,0 +1,28 @@
+<section class="hero is-success is-fullheight">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class="column is-4 is-offset-4">
+                <h3 class="title has-text-grey">Mikhailosev Marketplace</h3>
+                <p class="subtitle has-text-grey">Create Account or login</p>
+                <div class="box">
+                        <% include ./partials/messages %>
+
+                    <figure class="avatar">
+                        <img src="https://i.imgur.com/iPCzmNn.png">
+                    </figure>
+
+                    <div class="columns is-2 is-multiline is-mobile">
+                        <div class="column is-half">
+                            <a href="/users/login" class="button is-block is-info is-large is-fullwidth">Login</a>
+                        </div>
+                        <div class="column is-half">
+                            <a href="/users/register"
+                                class="button is-block is-success is-large is-fullwidth">Register</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
