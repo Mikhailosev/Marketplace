@@ -1,57 +1,175 @@
 const express = require("express");
 const router = express.Router();
-const imgtrans = require('../img')
-const mongoose = require('mongoose')
-const multer=require('multer')({limits: { fileSize:1000*1024 }})
-const uuid = require('uuid/v4')
+const mongoose = require("mongoose");
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, "./uploads");
+  },
+  filename: function(req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  }
+});
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/png"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1024 * 1024 * 5 },
+  fileFilter: fileFilter
+});
 
 const Item = require("../models/Item");
+
 const { ensureAuthenticated } = require("../config/auth");
 router.get("/items", ensureAuthenticated, (req, res) => {
-    res.render("items", {
-      user: req.user.name
-    });
+  res.render("items", {
+    user: req.user.name
   });
-  router.get("/shop", ensureAuthenticated, (req, res) => {
-    res.render("shop", {
-      user: req.user.name
+});
+
+router.post(
+  "/",
+  upload.single("itemImage"),
+  ensureAuthenticated,
+  (req, res) => {
+    const item = new Item({
+      name: req.body.name,
+      size: req.body.size,
+      quality: req.body.quality,
+      price: req.body.price,
+      description: req.body.description,
+      itemImage: req.file.path
     });
-  });
-  router.post('/', multer.single('image'), (req, res) => {
-    
-        insertRecord(req, res)
-    
-})
-module.exports = router;
-insertRecord=(req,res)=>{
-    let id = uuid()
-    console.log('upload', req.body)
-    imgtrans.small(req.file.buffer).save(id)
-    let item = new Item()
-    item.name = req.body.name;
-    item.size = req.body.size;
-    item.price = req.body.price;
-    item.quality = req.body.quality;  
-    item.descrption = req.body.descrption
-    item.img = id;
-    item.save((err, doc) => {
-        if (!err)
-            res.render(path);('dashboard/shop')
-        
-    })
-}
-updateRecord=(req, res)=> {
-  Item.findOneAndUpdate({ _id: req.body._id }, req.body, { new: true }, (err, doc) => {
-     
-      
-  })
-}
-router.get('/shop', (req, res) => {
-  Item.find((err, docs) => {
-      if (!err) {
-          res.render("dashboard/shop", {
-              Item: docs
-          })
+    item
+      .save()
+      .then(result => {
+        console.log(result);
+        /*res.status(201).json({
+          message: "Created product successfully",
+          _id:result.id,
+          name: req.body.name,
+          size: req.body.size,
+          quality: req.body.quality,
+          price: req.body.price,
+          description: req.body.description,
+            request: {
+              type: "GET",
+              url: "http://localhost:3000/products/" + result.id
+            }
+          }
+        );*/
+        res.redirect("/dashboard/shop");
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({
+          error: err
+        });
+      });
+  }
+);
+router.get("/shop/:itemId", (req, res, next) => {
+  const id = req.params.itemId;
+  Item.findById(id)
+    .select("name size quality description price itemImage")
+    .then(doc => {
+      if (doc) {
+        res.status(201).json({
+          message: "HAndling post request for items",
+          createdProduct: doc
+        });
+      } else {
+        res
+          .status(404)
+          .json({ message: "No valid entry found for the product" });
       }
-  })})
-  module.exports=router
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
+});
+
+router.get("/shop", ensureAuthenticated, (req, res) => {
+  Item.find()
+    .select("name size quality description price itemImage")
+    .then(docs => {
+      const response = {
+        count: docs.length,
+        items: docs.map(doc => {
+          return {
+            _id: doc.id,
+            name: doc.name,
+            size: doc.size,
+            quality: doc.quality,
+            price: doc.price,
+            description: doc.description,
+            itemImage: doc.itemImage,
+            request: {
+              type: "GET",
+              url: "http://localhost:3000/products/" + doc.id
+            }
+          };
+        })
+      };
+      //if(docs.length>=0){
+
+      res.render("shop", {
+        items: docs.map(doc => {
+          return {
+            _id: doc.id,
+            name: doc.name,
+            size: doc.size,
+            quality: doc.quality,
+            price: doc.price,
+            description: doc.description,
+            itemImage: doc.itemImage,}}),
+        user: req.body.user
+      });
+      //}else{
+      //  res.status(404).json({
+      //      message:'No entries found'
+      // });
+      //}
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
+});
+router.patch("/shop/:itemId", (req, res, next) => {
+  const id = req.params.itemId;
+  const updateOps = {};
+  for (const ops of req.body) {
+    updateOps[ops.propName] = ops.value;
+  }
+  Item.update({ _id: id }, { $set: { updateOps } });
+});
+router.delete("/shop/:itemId", (req, res, next) => {
+  const id = req.params.itemId;
+  Item.remove({
+    _id: id
+  }) /*.then(res=>{
+    res.status(200).json(result)
+  }).catch(err=>{
+    console.log(err)
+    res.status(500).json({
+
+    })*/;
+});
+module.exports = router;

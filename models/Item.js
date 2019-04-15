@@ -19,9 +19,9 @@ const ItemSchema = new mongoose.Schema({
   },
   description: {
     type: String,
+    required:true
   },
-  img: 
-      { type: String }
+  itemImage:{type:String, required:true}
 });
 
 const Item = mongoose.model("Item", ItemSchema);

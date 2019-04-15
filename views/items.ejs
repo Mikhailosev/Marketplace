@@ -92,19 +92,21 @@
           <div class="field">
                 <label class="label">Image</label>
             <div class="control">
-                    <input type='file' name="image">
+                    <input type='file' name="itemImage">
             </div>
           </div>
           <div class="field">
   
           <div class="field is-grouped">
             <div class="control">
-              <button
-                type="submit"
-                class="button is-large is-primary  btn-primary btn-block"
-              >
-                Submit
-            </button>
+                <form method="get" action="/dashboard/shop">
+                  <button
+                  type="submit"
+                  class="button is-large is-primary  btn-primary btn-block">
+                  Submit
+              </button>          
+                </form>
+              
             <button class="button is-large is-success">
              <a href="/dashboard/shop"> <label class="label"
                 >Go back!</label></a>
