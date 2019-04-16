@@ -1,3 +1,3 @@
 module.exports = {
-  MongoURI: `${process.env.DB}`
+  MongoURI: 'mongodb://localhost:27017/EmployeeDB'
 };

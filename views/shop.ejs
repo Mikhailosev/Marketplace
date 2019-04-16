@@ -18,7 +18,7 @@
         <a href="#" class="navbar-item">Blog</a>
         <a href="#" class="navbar-item">Forum</a>
         <a href="/dashboard/shop" class="navbar-item">Shop</a>
-        <a href="/users/logout" class="navbar-item">Log Out of <%= user %></a>
+        <a href="/users/logout" class="navbar-item">Log Out</a>
       </div>
     </div>
   </div>
@@ -34,63 +34,165 @@
       <div class="field has-addons">
         <div class="control is-expanded">
           <input
-            class="input has-text-centered"
             type="search"
+            id="searchField"
+            name="searchField"
+            class="input has-text-centered"
             placeholder="» » » » » » find me « « « « « «"
           />
         </div>
         <div class="control">
-          <a class="button is-info">Search</a>
+          <a onclick="searchItems()" class="button is-info">Search</a>
         </div>
       </div>
     </div>
-
-    <div class="row columns is-multiline">
-      <% items.forEach(function(item){ %>
-
-      <div class="column is-one-third">
-        <div class="card large round">
-          <div class="card-image ">
-            <figure class="image">
-              <img src="<%= item.itemImage %>" alt="Image" />
-            </figure>
-          </div>
-          <div class="card-content">
-            <div class="media">
-              <div class="media-left">
-                <figure class="image is-96x96">
-                  <img
-                    src="https://image.flaticon.com/icons/png/512/97/97895.png"
-                    alt="Image"
-                  />
-                </figure>
-              </div>
-              <div class="media-content">
-                <p class="title is-4 no-padding" style="margin-bottom:0px"><%= item.name %></p>
-                <p>
-                  <span class="title has-text-black	 is-6"
-                    ><b>Size: </b><%= item.size %></span
-                  >
-                </p>
-                <p>
-                  <span class="title has-text-black	 is-6"
-                    ><b>Quality: </b><%= item.quality %>/10</span
-                  >
-                </p>
-                <p>
-                  <span class="title has-text-black	 is-6"
-                    ><b>Price: </b><%= item.quality %>/$</span
-                  >
-                </p>
-              </div>
-            </div>
-            <div class="content">
-              <%= item.description %>
-            </div>
-          </div>
-        </div>
-      </div>
-      <% }) %>
-    </div>
+<span id="loadViewAll" ></span>
+    <div id="data2" class="row columns is-multiline"></div>
   </div>
 </div>
+
+<script type="text/javascript">
+  let data2 = document.getElementById("data2");
+  let myReq = new XMLHttpRequest();
+  myReq.open("GET", "/dashboard/shopItems");
+  myReq.onload = () => {
+    let myData = JSON.parse(myReq.responseText);
+    $(".canBeDelited").remove();
+    renderHTML(myData);
+  };
+  myReq.send();
+  function searchItems() {
+    const search = new XMLHttpRequest();
+    const url =
+      "/dashboard/search/?searchField=" +
+      document.getElementById("searchField").value;
+    search.open("GET", url);
+    search.onload = () => {
+      let searchData = JSON.parse(search.responseText);
+      console.log(searchData);
+      renderSearch(searchData);
+    };
+    search.send();
+  }
+
+  renderHTML = data => {
+    $('#loadBack').remove();
+    for (i = 0; i < data.length; i++) {
+      $("#data2").append(
+        $(`<div class="column canBeDelited is-one-third">
+      <div class="card canBeDelited large round">
+        <div class="card-image canBeDelited">
+          <figure class="image canBeDelited">
+            <img src="/dashboard/${
+              data[i].itemImage
+            }" class="canBeDelited" alt="Image" />
+          </figure>
+        </div class="canBeDelited">
+        <div class="card-content canBeDelited">
+          <div class="media canBeDelited">
+            <div class="media-left canBeDelited">
+              <figure class="canBeDelited image is-96x96">
+                <img
+                  src="https://image.flaticon.com/icons/png/512/97/97895.png"
+                  alt="Image"
+                  class="canBeDelited"
+                />
+              </figure>
+            </div>
+            <div class="media-content canBeDelited">
+              <p class="title canBeDelited is-4 no-padding" style="margin-bottom:0px">
+                ${data[i].name}
+              </p>
+              <p class="canBeDelited">
+                <span class="title canBeDelited has-text-black	 is-6"
+                  ><b >Size: </b>              ${data[i].size}
+  </span
+                >
+              </p>
+              <p class="canBeDelited">
+                <span class="title canBeDelited has-text-black	 is-6"
+                  ><b>Quality: </b>              ${data[i].quality}
+  /10</span
+                >
+              </p>
+              <p class="canBeDelited">
+                <span class="title canBeDelited has-text-black	 is-6"
+                  ><b>Price: </b>              ${data[i].price}
+  /$</span
+                >
+              </p>
+            </div>
+          </div>
+          <div class="content canBeDelited">
+             <p class="canBeDelited"><b>Description:</b><p>
+              <p class="canBeDelited"> ${data[i].description}</p>
+
+          </div>
+        </div>
+      </div>
+    </div>`)
+      );
+    }
+  };
+  renderSearch = data => {
+    $('#loadViewAll').append($(`<a class="button is-fullwidth is-large is-outlined" id="loadBack" onclick="myReq.onload()">Go Back to all Items</a>
+`))
+    $(".canBeDelited").remove();
+    for (i = 0; i < data.length; i++) {
+      $("#data2").append(
+        $(`<div class="column canBeDelited is-one-third">
+      <div class="card canBeDelited large round">
+        <div class="card-image canBeDelited">
+          <figure class="image canBeDelited">
+            <img src="/dashboard/${
+              data[i].itemImage
+            }" class="canBeDelited" alt="Image" />
+          </figure>
+        </div class="canBeDelited">
+        <div class="card-content canBeDelited">
+          <div class="media canBeDelited">
+            <div class="media-left canBeDelited">
+              <figure class="canBeDelited image is-96x96">
+                <img
+                  src="https://image.flaticon.com/icons/png/512/97/97895.png"
+                  alt="Image"
+                  class="canBeDelited"
+                />
+              </figure>
+            </div>
+            <div class="media-content canBeDelited">
+              <p class="title canBeDelited is-4 no-padding" style="margin-bottom:0px">
+                ${data[i].name}
+              </p>
+              <p class="canBeDelited">
+                <span class="title canBeDelited has-text-black	 is-6"
+                  ><b >Size: </b>              ${data[i].size}
+  </span
+                >
+              </p>
+              <p class="canBeDelited">
+                <span class="title canBeDelited has-text-black	 is-6"
+                  ><b>Quality: </b>              ${data[i].quality}
+  /10</span
+                >
+              </p>
+              <p class="canBeDelited">
+                <span class="title canBeDelited has-text-black	 is-6"
+                  ><b>Price: </b>              ${data[i].price}
+  /$</span
+                >
+              </p>
+            </div>
+          </div>
+          <div class="content canBeDelited">
+             <p class="canBeDelited"><b>Description:</b><p>
+              <p class="canBeDelited"> ${data[i].description}</p>
+
+          </div>
+        </div>
+      </div>
+    </div>`)
+      );
+    }
+  };
+</script>

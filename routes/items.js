@@ -37,9 +37,15 @@ router.get("/items", ensureAuthenticated, (req, res) => {
     user: req.user.name
   });
 });
+router.get('/search', (req, res) => {
+  Item.find({name: req.query.searchField }).then(result => {
+  res.json(result);
+console.log(result)
+});
+});
 
 router.post(
-  "/",
+  "/shopItemAdd",
   upload.single("itemImage"),
   ensureAuthenticated,
   (req, res) => {
@@ -55,8 +61,8 @@ router.post(
       .save()
       .then(result => {
         console.log(result);
-        /*res.status(201).json({
-          message: "Created product successfully",
+        res.status(201).json({
+          message: "Created item successfully",
           _id:result.id,
           name: req.body.name,
           size: req.body.size,
@@ -68,8 +74,8 @@ router.post(
               url: "http://localhost:3000/products/" + result.id
             }
           }
-        );*/
-        res.redirect("/dashboard/shop");
+        );
+
       })
       .catch(err => {
         console.log(err);
@@ -77,9 +83,9 @@ router.post(
           error: err
         });
       });
-  }
+   res.redirect('/dashboard/shop');}
 );
-router.get("/shop/:itemId", (req, res, next) => {
+router.get("/shopItem/:itemId", (req, res, next) => {
   const id = req.params.itemId;
   Item.findById(id)
     .select("name size quality description price itemImage")
@@ -103,56 +109,20 @@ router.get("/shop/:itemId", (req, res, next) => {
     });
 });
 
-router.get("/shop", ensureAuthenticated, (req, res) => {
+router.get("/shopItems", (req, res) => {
   Item.find()
     .select("name size quality description price itemImage")
     .then(docs => {
-      const response = {
-        count: docs.length,
-        items: docs.map(doc => {
-          return {
-            _id: doc.id,
-            name: doc.name,
-            size: doc.size,
-            quality: doc.quality,
-            price: doc.price,
-            description: doc.description,
-            itemImage: doc.itemImage,
-            request: {
-              type: "GET",
-              url: "http://localhost:3000/products/" + doc.id
-            }
-          };
-        })
-      };
-      //if(docs.length>=0){
-
-      res.render("shop", {
-        items: docs.map(doc => {
-          return {
-            _id: doc.id,
-            name: doc.name,
-            size: doc.size,
-            quality: doc.quality,
-            price: doc.price,
-            description: doc.description,
-            itemImage: doc.itemImage,}}),
-        user: req.body.user
+      res.send(docs)
+      //if(docs.length>=0){ 
       });
       //}else{
       //  res.status(404).json({
       //      message:'No entries found'
       // });
       //}
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
-      });
-    });
 });
-router.patch("/shop/:itemId", (req, res, next) => {
+router.patch("/shopItem/:itemId", (req, res, next) => {
   const id = req.params.itemId;
   const updateOps = {};
   for (const ops of req.body) {
@@ -160,7 +130,7 @@ router.patch("/shop/:itemId", (req, res, next) => {
   }
   Item.update({ _id: id }, { $set: { updateOps } });
 });
-router.delete("/shop/:itemId", (req, res, next) => {
+router.delete("/shopItem/:itemId", (req, res, next) => {
   const id = req.params.itemId;
   Item.remove({
     _id: id
@@ -171,5 +141,8 @@ router.delete("/shop/:itemId", (req, res, next) => {
     res.status(500).json({
 
     })*/;
+});
+router.get('/shop', (req, res) => {
+res.render('shop');
 });
 module.exports = router;

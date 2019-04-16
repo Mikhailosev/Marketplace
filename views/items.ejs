@@ -22,7 +22,7 @@
     </div>
 </nav>
 <section class="section">
-  <form action="/dashboard" method="POST" autocomplete="off" enctype="multipart/form-data">
+  <form action="/dashboard/shopItemAdd" method="POST" autocomplete="off" enctype="multipart/form-data">
       <div class="columns">
         <div class="column is-4 is-offset-4">
           <% include ./partials/messages %>
@@ -99,12 +99,13 @@
   
           <div class="field is-grouped">
             <div class="control">
-                <form method="get" action="/dashboard/shop">
-                  <button
+              <a href="/dashboard/shop">
+                <button
                   type="submit"
                   class="button is-large is-primary  btn-primary btn-block">
-                  Submit
-              </button>          
+                   Submit 
+              </button>   
+            </a>
                 </form>
               
             <button class="button is-large is-success">
