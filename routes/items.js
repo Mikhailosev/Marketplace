@@ -30,15 +30,17 @@ const upload = multer({
 });
 
 const Item = require("../models/Item");
+const User=require('../models/User')
 
 const { ensureAuthenticated } = require("../config/auth");
+
 router.get("/items", ensureAuthenticated, (req, res) => {
   res.render("items", {
     user: req.user.name
   });
 });
 router.get('/search', (req, res) => {
-  Item.find({name: req.query.searchField }).then(result => {
+  Item.find({name: { $regex: req.query.searchField } }).then(result => {
   res.json(result);
 console.log(result)
 });
@@ -55,26 +57,14 @@ router.post(
       quality: req.body.quality,
       price: req.body.price,
       description: req.body.description,
-      itemImage: req.file.path
+      itemImage: req.file.path,
+      userId: req.user._id
     });
     item
       .save()
       .then(result => {
         console.log(result);
-        res.status(201).json({
-          message: "Created item successfully",
-          _id:result.id,
-          name: req.body.name,
-          size: req.body.size,
-          quality: req.body.quality,
-          price: req.body.price,
-          description: req.body.description,
-            request: {
-              type: "GET",
-              url: "http://localhost:3000/products/" + result.id
-            }
-          }
-        );
+        res.json(result);
 
       })
       .catch(err => {
@@ -88,7 +78,7 @@ router.post(
 router.get("/shopItem/:itemId", (req, res, next) => {
   const id = req.params.itemId;
   Item.findById(id)
-    .select("name size quality description price itemImage")
+    .select("name size quality description price itemImage userId")
     .then(doc => {
       if (doc) {
         res.status(201).json({
@@ -109,8 +99,41 @@ router.get("/shopItem/:itemId", (req, res, next) => {
     });
 });
 
+
 router.get("/shopItems", (req, res) => {
   Item.find()
+    .select("name size quality description price itemImage")
+    .then(docs => {
+      res.send(docs)
+      //if(docs.length>=0){ 
+      });
+      //}else{
+      //  res.status(404).json({
+      //      message:'No entries found'
+      // });
+      //}
+});
+router.get('/passuser', ensureAuthenticated, (req,res,next)=>{
+  const userId=req.user._id
+  User.find({
+    _id: userId
+  })
+  .then(docs => {
+    res.send(docs)
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({
+      error: err
+    });
+  });
+})
+router.get("/shopItemsCreatedByUser",ensureAuthenticated, (req, res) => {
+  const userId = req.user._id;
+  Item.find({
+    userId: userId
+  })
+  
     .select("name size quality description price itemImage")
     .then(docs => {
       res.send(docs)
@@ -130,9 +153,10 @@ router.patch("/shopItem/:itemId", (req, res, next) => {
   }
   Item.update({ _id: id }, { $set: { updateOps } });
 });
-router.delete("/shopItem/:itemId", (req, res, next) => {
+//delete
+router.delete("/delete/:itemId", (req, res, next) => {
   const id = req.params.itemId;
-  Item.remove({
+  Item.findOneAndRemove({
     _id: id
   }) /*.then(res=>{
     res.status(200).json(result)

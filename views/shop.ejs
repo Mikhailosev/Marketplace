@@ -1,6 +1,14 @@
 <nav class="navbar is-light">
   <div class="container">
     <div class="navbar-brand">
+      <p class="buttons">
+        <a href="https://github.com/Mikhailosev" class="button">
+          <span class="icon">
+            <i class="fab fa-github"></i>
+          </span>
+          <span>GitHub</span>
+        </a>
+      </p>
       <a class="navbar-item" href="/dashboard">
         <img src="https://i.imgur.com/MtCtrCr.png" />
       </a>
@@ -11,14 +19,13 @@
       </span>
     </div>
     <div id="navMenu" class="navbar-menu has-text-centered">
-      <div class="navbar-end">
-        <a href="/dashboard/items" class="navbar-item is-active"
+      <div class="navbar-end" id="navbar">
+        <a href="/dashboard/items" id="navbar" class="navbar-item is-active"
           >Sell an item</a
         >
         <a href="#" class="navbar-item">Blog</a>
         <a href="#" class="navbar-item">Forum</a>
         <a href="/dashboard/shop" class="navbar-item">Shop</a>
-        <a href="/users/logout" class="navbar-item">Log Out</a>
       </div>
     </div>
   </div>
@@ -30,7 +37,7 @@
     <span class="flow-3"></span>
   </div>
   <div class="section">
-    <div class="box">
+    <div class="box" id="box">
       <div class="field has-addons">
         <div class="control is-expanded">
           <input
@@ -46,13 +53,106 @@
         </div>
       </div>
     </div>
-<span id="loadViewAll" ></span>
-    <div id="data2" class="row columns is-multiline"></div>
+
+    <span id="loadViewAll"></span>
+    <div id="data2" class=" shrink border row columns is-multiline"></div>
   </div>
 </div>
 
 <script type="text/javascript">
-  let data2 = document.getElementById("data2");
+  allItems = () => {
+    $("#load1").remove();
+    $("#load").remove();
+    $("#box").append(
+      $(`<a class="button is-half is-active  is-large is-outlined" id="load1" onclick="allItems()">All items</a>
+      <a class="button is-half  is-large is-outlined" id="load" onclick="myItems()">My Items</a>`)
+    );
+    myReq.onload();
+  };
+  myItems = () => {
+    $("#load1").remove();
+    $("#load").remove();
+    $("#box").append(
+      $(`<a class="button is-half  is-large is-outlined" id="load1" onclick="allItems()">All items</a>
+      <a class="button is-half is-active is-large is-outlined" id="load" onclick="myItems()">My Items</a>`)
+    );
+    $(".canBeDelited").remove();
+
+    let userItemsReq = new XMLHttpRequest();
+    userItemsReq.open("GET", "/dashboard/shopItemsCreatedByUser");
+    userItemsReq.onload = () => {
+      let userDataItems = JSON.parse(userItemsReq.responseText);
+      renderHTMLforUsersItems(userDataItems);
+    };
+    userItemsReq.send();
+  };
+  renderHTMLforUsersItems = data => {
+    for (i = 0; i < data.length; i++) {
+      $("#data2").append(
+        $(`<div class="column canBeDelited">
+      <div class="card canBeDelited large round">
+        <div class="card-image canBeDelited">
+          <figure class="image canBeDelited">
+            <img src="/dashboard/${
+              data[i].itemImage
+            }" class="canBeDelited" alt="Image" />
+          </figure>
+        </div class="canBeDelited">
+        <div class="card-content canBeDelited">
+          <div class="media canBeDelited">
+            <div class="media-left canBeDelited">
+              <figure class="canBeDelited image is-96x96">
+                <img
+                  src="https://image.flaticon.com/icons/png/512/97/97895.png"
+                  alt="Image"
+                  class="canBeDelited"
+                />
+              </figure>
+              
+            </div>
+            <div class="media-content canBeDelited">
+              <p class="title canBeDelited is-4 no-padding" style="margin-bottom:0px">
+               <br> ${data[i].name}
+              </p>
+              <p class="canBeDelited">
+                <span class="title canBeDelited has-text-black	 is-6"
+                  ><b >Size: </b>              ${data[i].size}
+  </span
+                >
+              </p>
+              <p class="canBeDelited">
+                <span class="title canBeDelited has-text-black	 is-6"
+                  ><b>Quality: </b>              ${data[i].quality}
+  /10</span
+                >
+              </p>
+              <p class="canBeDelited">
+                <span class="title canBeDelited has-text-black	 is-6"
+                  ><b>Price: </b>              ${data[i].price}
+  /$</span
+                >
+              </p>
+            </div>
+          </div>
+          <div class="content canBeDelited">
+             <p class="canBeDelited"><b>Description:</b><p>
+              <p class="canBeDelited"> ${data[i].description}</p>
+
+          </div>
+        
+        <div class="buttons has-addons is-centered">
+          <span class="button is-large is-danger">Delete</span>      
+    <span class="button is-large is-primary">View</span>
+  <span class="button is-large is-warning">Edit</span>
+  </div>  
+</div>
+      </div>
+      
+    </div>`)
+      );
+    }
+  };
+  //RENDERING AT LOADING
   let myReq = new XMLHttpRequest();
   myReq.open("GET", "/dashboard/shopItems");
   myReq.onload = () => {
@@ -61,6 +161,14 @@
     renderHTML(myData);
   };
   myReq.send();
+  //DELETE
+  deleteObj = () => {
+    let delReq = new XMLHttpRequest();
+    delReq.open("DELETE", "/dashboard/delete/" + req.body.name);
+    delReq.onload = () => {};
+    delReq.send();
+  };
+  //SEARCHBAR
   function searchItems() {
     const search = new XMLHttpRequest();
     const url =
@@ -69,14 +177,33 @@
     search.open("GET", url);
     search.onload = () => {
       let searchData = JSON.parse(search.responseText);
-      console.log(searchData);
       renderSearch(searchData);
     };
     search.send();
   }
+  //onload
+  let getUser = new XMLHttpRequest();
+  getUser.open("GET", "/dashboard/passuser");
+  //fetchApi!!
+  getUser.onload = () => {
+    let userData = JSON.parse(getUser.responseText);
+    renderUserHTML(userData);
+  };
+  getUser.send();
+  renderUserHTML = userData => {
+    if (userData[0]._id) {
+      $("#box").append(
+        $(`<a class="button is-half is-active is-large is-outlined" id="load1" onclick="allItems()">All items</a>
+      <a class="button is-half is-large is-outlined" id="load" onclick="myItems()">My Items</a>`)
+      );
+      $("#navbar").append(
+        $('<a href="/users/logout" class="navbar-item">Logout</a>')
+      );
+    }
+  };
 
   renderHTML = data => {
-    $('#loadBack').remove();
+    $("#loadBack").remove();
     for (i = 0; i < data.length; i++) {
       $("#data2").append(
         $(`<div class="column canBeDelited is-one-third">
@@ -128,6 +255,11 @@
               <p class="canBeDelited"> ${data[i].description}</p>
 
           </div>
+          <div class="buttons has-addons is-centered">
+
+  <span class="button is-large is-primary">View</span>
+
+  </div>  
         </div>
       </div>
     </div>`)
@@ -135,8 +267,12 @@
     }
   };
   renderSearch = data => {
-    $('#loadViewAll').append($(`<a class="button is-fullwidth is-large is-outlined" id="loadBack" onclick="myReq.onload()">Go Back to all Items</a>
-`))
+    $("#loadBack").remove();
+
+    $("#loadViewAll").append(
+      $(`<a class="button is-fullwidth is-large is-outlined" id="loadBack" onclick="myReq.onload()">Go Back to all Items</a>
+`)
+    );
     $(".canBeDelited").remove();
     for (i = 0; i < data.length; i++) {
       $("#data2").append(
@@ -189,6 +325,11 @@
               <p class="canBeDelited"> ${data[i].description}</p>
 
           </div>
+          <div class="buttons has-addons is-centered">
+
+  <span class="button is-large is-primary">View</span>
+
+  </div>  
         </div>
       </div>
     </div>`)

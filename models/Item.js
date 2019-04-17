@@ -21,7 +21,8 @@ const ItemSchema = new mongoose.Schema({
     type: String,
     required:true
   },
-  itemImage:{type:String, required:true}
+  itemImage:{type:String, required:true},
+  userId:{type:String, required:true}
 });
 
 const Item = mongoose.model("Item", ItemSchema);
