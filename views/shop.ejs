@@ -141,7 +141,7 @@
           </div>
         
         <div class="buttons has-addons is-centered">
-          <span class="button is-large is-danger">Delete</span>      
+          <span onclick="deleteProduct()"class="button is-large is-danger">Delete</span>      
     <span class="button is-large is-primary">View</span>
   <span class="button is-large is-warning">Edit</span>
   </div>  
@@ -162,12 +162,11 @@
   };
   myReq.send();
   //DELETE
-  deleteObj = () => {
-    let delReq = new XMLHttpRequest();
-    delReq.open("DELETE", "/dashboard/delete/" + req.body.name);
-    delReq.onload = () => {};
-    delReq.send();
-  };
+  deleteProduct=()=>{
+    fetch('').then((res)=>{
+     return res
+    }).then().catch()
+  }
   //SEARCHBAR
   function searchItems() {
     const search = new XMLHttpRequest();

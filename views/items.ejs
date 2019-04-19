@@ -53,6 +53,7 @@
               <input
                 class="input"
                 name="size"
+                id="size"
                 type="text"
                 placeholder="Enter size"
                 value="<%= typeof username != 'undefined' ? username : '' %>"
@@ -94,13 +95,13 @@
           <div class="field">
                 <label class="label">Description</label>
             <div class="control">
-              <textarea class="textarea is-primary input" type="text" name="description" placeholder="Provide some description if necessary"></textarea>
+              <textarea onchange="textareaFunc()" id="description" class="textarea is-primary input" type="text" name="description" placeholder="Provide some description if necessary"></textarea>
             </div>
           </div>
           <div class="field">
-                <label class="label">Image</label>
+              <label class="label">Image</label>
             <div class="control">
-                    <input type='file' name="itemImage">
+              <input id="image" type='file' name="itemImage">
             </div>
           </div>
           <div class="field">
@@ -109,17 +110,18 @@
             <div class="control">
               <a href="/dashboard/shop">
                 <button
+                id="b"
                   type="submit"
-                  class="button is-large is-primary  btn-primary btn-block">
+                  class="button is-large is-primary  btn-primary btn-block" disabled="true">
                    Submit 
               </button>   
             </a>
                 </form>
               
-            <button class="button is-large is-success">
+            <button id="submitButton" class="button is-large is-success">
              <a href="/dashboard/shop"> <label class="label"
                 >Go back!</label></a>
-                
+               
               
             </button>
             </div>
@@ -128,3 +130,88 @@
       </div>
     </form>
   </section>
+  <script>
+      let state = {
+        "nameValid": false,
+        "sizeValid": false,
+        "qualityValid": false,
+        "priceValid": false,
+        "descriptionValid": false,
+        "imageValid": false,
+        "allValid":false
+      }
+      let checkValidity = (value) => {
+        return value.length > 0
+      }
+      let areAllFieldsValid = (state) => {
+        console.log(state)
+        let count = 0
+        for (key in state){
+          if (state[key] == true ){
+            count += 1
+            if (count === 6) {
+              state.allValid = true
+            }
+          }
+        }
+        if(state.allValid===true){
+          var b = document.getElementById("b"); 
+        b.disabled=false
+
+        }
+      }
+      let switchButtonEnablement = (boolVal) => {
+        let buttonEl = document.getElementById("submitButton")
+        return buttonEl.setAttribute(String(boolVal))
+      }
+  
+      let priceEl = document.getElementById("price")
+      priceEl.oninput = (e) => {
+        console.log(e)
+        state.priceValid = checkValidity(priceEl.value)
+        areAllFieldsValid(state)
+      }
+      let nameEl = document.getElementById("name")
+      nameEl.oninput = (e) => {
+        state.nameValid = checkValidity(nameEl.value)
+        areAllFieldsValid(state)
+      }
+      let sizeEl = document.getElementById("size")
+      sizeEl.oninput = (e) => {
+        state.sizeValid = checkValidity(sizeEl.value)
+        areAllFieldsValid(state)
+      }
+      let qualityEl = document.getElementById("quality")
+      console.log(quality)
+      qualityEl.oninput = (e) => {
+       
+        state.qualityValid = checkValidity(qualityEl.value)
+        areAllFieldsValid(state)
+      
+      }
+      //TODO: find the way on how to listen description and image changes
+      textareaFunc=()=>{
+        var text2 = $("#description").val();
+        console.log(text2)
+        state.descriptionValid = checkValidity(text2)
+        areAllFieldsValid(state)
+      }
+      
+    
+   
+      
+
+     
+      let imageEl = document.getElementById("image")
+      imageEl.oninput = (e) => {
+        let file=''
+     if(imageEl.files.length>0){
+      console.log(imageEl.files.length);
+      file='12'
+      state.imageValid = checkValidity(imageEl.files)
+        areAllFieldsValid(state)
+     }
+   
+}
+  
+  </script>

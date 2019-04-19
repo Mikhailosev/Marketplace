@@ -97,7 +97,6 @@ router.post("/register", (req, res) => {
       });
   }
 });
-
 //LOGIN HANDLE
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", {
