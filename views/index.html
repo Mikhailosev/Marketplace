@@ -11,24 +11,12 @@
 </head>
 
 <body>
-    Address:<br>
-    <textarea id="myTextarea">
-    342 Alvin Road
-    Ducksburg</textarea>
-    
-    <p>Click the button to alert the contents of the text area.</p>
-    
-    <button type="button" onclick="myFunction()">Try it</button>
-    
-    <p id="demo"></p>
-    
-    <script>
-    function myFunction() {
-      var x = document.getElementById("myTextarea").value;
-      console.log(x.length)
-      document.getElementById("demo").innerHTML = x;
-    }
-    </script>
+    <select>
+        <option value="volvo">Volvo</option>
+        <option value="saab">Saab</option>
+        <option value="mercedes">Mercedes</option>
+        <option value="audi">Audi</option>
+      </select>
 </body>
 
 </html>

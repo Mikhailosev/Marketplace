@@ -24,7 +24,7 @@
             <a href="#" class="navbar-item">Blog</a>
             <a href="#" class="navbar-item">Forum</a>
             <a href="/dashboard/shop" class="navbar-item">Shop</a>
-            <a href="/users/logout" class="navbar-item">Log Out of <%= user %></a>
+           
           </div>
     </div>
     </div>
@@ -50,14 +50,19 @@
           <div class="field">
             <label class="label">Size</label>
             <div class="control has-icons-left has-icons-right">
-              <input
-                class="input"
+                <select class="input"
                 name="size"
                 id="size"
                 type="text"
                 placeholder="Enter size"
-                value="<%= typeof username != 'undefined' ? username : '' %>"
-              />
+                value="">
+                        <option value="XS">XS</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
+                      </select>
               <span class="icon is-small is-left">
                 <i class="fa fa-user"></i>
               </span>
@@ -66,14 +71,18 @@
           <div class="field">
             <label class="label">Quality</label>
             <div class="control has-icons-left has-icons-right">
-              <input
-                class="input"
-                type="text"
-                id="quality"
+                <select class="input"
                 name="quality"
-                placeholder="Rate the quality 1/10"
-                value="<%= typeof email != 'undefined' ? email : '' %>"
-              />
+                id="quality"
+                type="text"
+                placeholder="Enter quality"
+                value="">
+                        <option value="New with tag">New with tag</option>
+                        <option value="New without tag">New without tag</option>
+                        <option value="With deffects">With deffects</option>
+                        <option value="Was worn one time">Was worn one time</option>
+                        <option value="Was worn several times">Was worn several times</option>
+                      </select>
               <span class="icon is-small is-left">
                 <i class="fa fa-envelope"></i>
               </span>
@@ -121,8 +130,6 @@
             <button id="submitButton" class="button is-large is-success">
              <a href="/dashboard/shop"> <label class="label"
                 >Go back!</label></a>
-               
-              
             </button>
             </div>
           </div>
@@ -131,87 +138,138 @@
     </form>
   </section>
   <script>
-      let state = {
-        "nameValid": false,
-        "sizeValid": false,
-        "qualityValid": false,
-        "priceValid": false,
-        "descriptionValid": false,
-        "imageValid": false,
-        "allValid":false
-      }
-      let checkValidity = (value) => {
-        return value.length > 0
-      }
-      let areAllFieldsValid = (state) => {
-        console.log(state)
-        let count = 0
-        for (key in state){
-          if (state[key] == true ){
-            count += 1
-            if (count === 6) {
-              state.allValid = true
-            }
-          }
-        }
-        if(state.allValid===true){
-          var b = document.getElementById("b"); 
-        b.disabled=false
-
+       let state = {
+    nameValid: false,
+    sizeValid: false,
+    qualityValid: false,
+    priceValid: false,
+    descriptionValid: false,
+    imageValid: false,
+    allValid: false
+  };
+  let checkValidity = value => {
+    return value.length > 0;
+  };
+  let areAllFieldsValid = state => {
+    console.log(state);
+    let count = 0;
+    for (key in state) {
+      if (state[key] == true) {
+        count += 1;
+        if (count === 6) {
+          state.allValid = true;
         }
       }
-      let switchButtonEnablement = (boolVal) => {
-        let buttonEl = document.getElementById("submitButton")
-        return buttonEl.setAttribute(String(boolVal))
-      }
-  
-      let priceEl = document.getElementById("price")
-      priceEl.oninput = (e) => {
-        console.log(e)
-        state.priceValid = checkValidity(priceEl.value)
-        areAllFieldsValid(state)
-      }
-      let nameEl = document.getElementById("name")
-      nameEl.oninput = (e) => {
-        state.nameValid = checkValidity(nameEl.value)
-        areAllFieldsValid(state)
-      }
-      let sizeEl = document.getElementById("size")
-      sizeEl.oninput = (e) => {
-        state.sizeValid = checkValidity(sizeEl.value)
-        areAllFieldsValid(state)
-      }
-      let qualityEl = document.getElementById("quality")
-      console.log(quality)
-      qualityEl.oninput = (e) => {
-       
-        state.qualityValid = checkValidity(qualityEl.value)
-        areAllFieldsValid(state)
-      
-      }
-      //TODO: find the way on how to listen description and image changes
-      textareaFunc=()=>{
-        var text2 = $("#description").val();
-        console.log(text2)
-        state.descriptionValid = checkValidity(text2)
-        areAllFieldsValid(state)
-      }
-      
-    
-   
-      
+    }
+    if (state.allValid === true) {
+      var b = document.getElementById("b");
+      b.disabled = false;
+    }
+  };
+  let switchButtonEnablement = boolVal => {
+    let buttonEl = document.getElementById("submitButton");
+    return buttonEl.setAttribute(String(boolVal));
+  };
 
-     
-      let imageEl = document.getElementById("image")
-      imageEl.oninput = (e) => {
-        let file=''
-     if(imageEl.files.length>0){
+  let priceEl = document.getElementById("price");   
+  priceEl.oninput = e => {
+    console.log(e);
+    state.priceValid = checkValidity(priceEl.value);
+    state.nameValid = checkValidity(nameEl.value);
+    state.sizeValid = checkValidity(sizeEl.value);
+    state.qualityValid = checkValidity(qualityEl.value);
+    var text2 = $("#description").val();
+    state.descriptionValid = checkValidity(text2);
+    let file = "";
+    if (imageEl.files.length > 0) {
       console.log(imageEl.files.length);
-      file='12'
-      state.imageValid = checkValidity(imageEl.files)
-        areAllFieldsValid(state)
-     }
-   
-}
+      file = "12";
+      state.imageValid = checkValidity(imageEl.files);
+      areAllFieldsValid(state);
+    }
+  };
+  let nameEl = document.getElementById("name");
+  nameEl.oninput = e => {
+    state.priceValid = checkValidity(priceEl.value);
+    state.nameValid = checkValidity(nameEl.value);
+    state.sizeValid = checkValidity(sizeEl.value);
+    state.qualityValid = checkValidity(qualityEl.value);
+    var text2 = $("#description").val();
+    state.descriptionValid = checkValidity(text2);
+    let file = "";
+    if (imageEl.files.length > 0) {
+      console.log(imageEl.files.length);
+      file = "12";
+      state.imageValid = checkValidity(imageEl.files);
+      areAllFieldsValid(state);
+    }
+  };
+  let sizeEl = document.getElementById("size");
+  sizeEl.oninput = e => {
+    state.priceValid = checkValidity(priceEl.value);
+    state.nameValid = checkValidity(nameEl.value);
+    state.sizeValid = checkValidity(sizeEl.value);
+    state.qualityValid = checkValidity(qualityEl.value);
+    var text2 = $("#description").val();
+    state.descriptionValid = checkValidity(text2);
+    let file = "";
+    if (imageEl.files.length > 0) {
+      console.log(imageEl.files.length);
+      file = "12";
+      state.imageValid = checkValidity(imageEl.files);
+      areAllFieldsValid(state);
+    }
+  };
+  let qualityEl = document.getElementById("quality");
+  console.log(quality);
+  qualityEl.oninput = e => {
+    state.priceValid = checkValidity(priceEl.value);
+    state.nameValid = checkValidity(nameEl.value);
+    state.sizeValid = checkValidity(sizeEl.value);
+    state.qualityValid = checkValidity(qualityEl.value);
+    var text2 = $("#description").val();
+    state.descriptionValid = checkValidity(text2);
+    let file = "";
+    if (imageEl.files.length > 0) {
+      console.log(imageEl.files.length);
+      file = "12";
+      state.imageValid = checkValidity(imageEl.files);
+      areAllFieldsValid(state);
+    }
+  };
+  //TODO: find the way on how to listen description and image changes
+  textareaFunc = () => {
+    var text2 = $("#description").val();
+    state.priceValid = checkValidity(priceEl.value);
+    state.nameValid = checkValidity(nameEl.value);
+    state.sizeValid = checkValidity(sizeEl.value);
+    state.qualityValid = checkValidity(qualityEl.value);
+    var text2 = $("#description").val();
+    state.descriptionValid = checkValidity(text2);
+    let file = "";
+    if (imageEl.files.length > 0) {
+      console.log(imageEl.files.length);
+      file = "12";
+      state.imageValid = checkValidity(imageEl.files);
+      areAllFieldsValid(state);
+    }
+  };
+
+  let imageEl = document.getElementById("image");
+  imageEl.oninput = e => {
+    state.priceValid = checkValidity(priceEl.value);
+    state.nameValid = checkValidity(nameEl.value);
+    state.sizeValid = checkValidity(sizeEl.value);
+    state.qualityValid = checkValidity(qualityEl.value);
+    var text2 = $("#description").val();
+    state.descriptionValid = checkValidity(text2);
+    let file = "";
+    if (imageEl.files.length > 0) {
+      console.log(imageEl.files.length);
+      file = "12";
+      state.imageValid = checkValidity(imageEl.files);
+      areAllFieldsValid(state);
+    }
+  };
   
   </script>

@@ -1,0 +1,301 @@
+<nav class="navbar is-light">
+        <div class="container">
+          <div class="navbar-brand">
+            <p class="buttons">
+              <a href="https://github.com/Mikhailosev" class="button">
+                <span class="icon">
+                  <i class="fab fa-github"></i>
+                </span>
+                <span>GitHub</span>
+              </a>
+            </p>
+            <a class="navbar-item" href="/dashboard">
+              <img src="https://i.imgur.com/MtCtrCr.png" />
+            </a>
+            <span class="navbar-burger burger" data-target="navMenu">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </div>
+          <div id="navMenu" class="navbar-menu has-text-centered">
+            <div class="navbar-end" id="navbar">
+              <a href="/dashboard/items" class="navbar-item"
+                >Sell an item</a
+              >
+              <a href="#" class="navbar-item">Blog</a>
+              <a href="#" class="navbar-item">Forum</a>
+              <a href="/dashboard/shop" class="navbar-item">Shop</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <section class="section">
+            <form action="" method="POST" id="form"autocomplete="off" enctype="multipart/form-data">
+                <div class="columns">
+                  <div class="column is-4 is-offset-4">
+                    <% include ./partials/messages %>
+                    <div class="field">
+                      <label class="label">Name</label>
+                      <div class="control">
+                        <input
+                          class="input"
+                          type="name"
+                          id="name"
+                          name="name"
+                          placeholder="Enter full name of an item"
+                          value=""
+                        />
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="label">Size</label>
+                      <div class="control has-icons-left has-icons-right">
+                            <select class="input"
+                            name="size"
+                            id="size"
+                            type="text"
+                            placeholder="Enter size"
+                            value="">
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                    <option value="XXL">XXL</option>
+                                  </select>
+                        <span class="icon is-small is-left">
+                          <i class="fa fa-user"></i>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="label">Quality</label>
+                      <div class="control has-icons-left has-icons-right">
+                            <select class="input"
+                            name="quality"
+                            id="quality"
+                            type="text"
+                            placeholder="Enter quality"
+                            value="">
+                                    <option value="New with tag">New with tag</option>
+                                    <option value="New without tag">New without tag</option>
+                                    <option value="With deffects">With deffects</option>
+                                    <option value="Was worn one time">Was worn one time</option>
+                                    <option value="Was worn several times">Was worn several times</option>
+                                  </select>
+                        <span class="icon is-small is-left">
+                          <i class="fa fa-envelope"></i>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label  class="label">Price</label>
+                      <div class="control">
+                        <input
+                          class="input"
+                          type="text"
+                          id="price"
+                          name="price"
+                          placeholder="Enter the Price"
+                          value=""
+                        />
+                      </div>
+                    </div>
+                    <div class="field">
+                          <label class="label">Description</label>
+                      <div class="control">
+                        <textarea onchange="textareaFunc()" value="" id="description" class="textarea is-primary input" type="text" name="description" placeholder="Provide some description if necessary"></textarea>
+                      </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Image</label>
+                      <div class="control">
+                        <input id="image" value="" type='file' name="itemImage">
+                      </div>
+                    </div>
+                    <div class="field">
+            
+                    <div class="field is-grouped">
+                      <div class="control">
+                        <a href="/dashboard/shop">
+                          <button
+                          id="b"
+                          onclick="redirect()"
+                            type="submit"
+                            class="button is-large is-primary  btn-primary btn-block" disabled="true">
+                             Submit 
+                        </button>   
+                      </a>
+                          </form>
+                        
+                      <button id="submitButton" class="button is-large is-success">
+                       <a href="/dashboard/shop"> <label class="label"
+                          >Go back!</label></a>
+                      </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </section>
+<script>
+    let myReq = new XMLHttpRequest();
+let end=`${window.location.pathname.split("/").pop()}`
+  myReq.open("GET","/dashboard/updateItem/"+end);
+  myReq.onload = () => {
+    let myData = JSON.parse(myReq.responseText);
+    var name = document.getElementById("name"); 
+    var price = document.getElementById("price"); 
+
+    var size = document.getElementById("size"); 
+
+    var quality = document.getElementById("quality"); 
+
+    var description = document.getElementById("description"); 
+
+    $('#name').val(`${myData.name}`);
+    $('#size').val(`${myData.size}`);
+    $('#price').val(`${myData.name}`);
+    $('#quality').val(`${myData.quality}`);
+    $('#description').val(`${myData.description}`)  ;
+    $('#form').attr('action', `/dashboard/updatedItem/${myData._id}` )
+
+
+
+  };
+  myReq.send();
+  let state = {
+    nameValid: false,
+    sizeValid: false,
+    qualityValid: false,
+    priceValid: false,
+    descriptionValid: false,
+    imageValid: false,
+    allValid: false
+  };
+  let checkValidity = value => {
+    return value.length > 0;
+  };
+  let areAllFieldsValid = state => {
+    console.log(state);
+    let count = 0;
+    for (key in state) {
+      if (state[key] == true) {
+        count += 1;
+        if (count === 6) {
+          state.allValid = true;
+        }
+      }
+    }
+    if (state.allValid === true) {
+      var b = document.getElementById("b");
+      b.disabled = false;
+    }
+  };
+  let switchButtonEnablement = boolVal => {
+    let buttonEl = document.getElementById("submitButton");
+    return buttonEl.setAttribute(String(boolVal));
+  };
+
+  let priceEl = document.getElementById("price");   
+  priceEl.oninput = e => {
+    console.log(e);
+    state.priceValid = checkValidity(priceEl.value);
+    state.nameValid = checkValidity(nameEl.value);
+    state.sizeValid = checkValidity(sizeEl.value);
+    state.qualityValid = checkValidity(qualityEl.value);
+    var text2 = $("#description").val();
+    state.descriptionValid = checkValidity(text2);
+    let file = "";
+    if (imageEl.files.length > 0) {
+      console.log(imageEl.files.length);
+      file = "12";
+      state.imageValid = checkValidity(imageEl.files);
+      areAllFieldsValid(state);
+    }
+  };
+  let nameEl = document.getElementById("name");
+  nameEl.oninput = e => {
+    state.priceValid = checkValidity(priceEl.value);
+    state.nameValid = checkValidity(nameEl.value);
+    state.sizeValid = checkValidity(sizeEl.value);
+    state.qualityValid = checkValidity(qualityEl.value);
+    var text2 = $("#description").val();
+    state.descriptionValid = checkValidity(text2);
+    let file = "";
+    if (imageEl.files.length > 0) {
+      console.log(imageEl.files.length);
+      file = "12";
+      state.imageValid = checkValidity(imageEl.files);
+      areAllFieldsValid(state);
+    }
+  };
+  let sizeEl = document.getElementById("size");
+  sizeEl.oninput = e => {
+    state.priceValid = checkValidity(priceEl.value);
+    state.nameValid = checkValidity(nameEl.value);
+    state.sizeValid = checkValidity(sizeEl.value);
+    state.qualityValid = checkValidity(qualityEl.value);
+    var text2 = $("#description").val();
+    state.descriptionValid = checkValidity(text2);
+    let file = "";
+    if (imageEl.files.length > 0) {
+      console.log(imageEl.files.length);
+      file = "12";
+      state.imageValid = checkValidity(imageEl.files);
+      areAllFieldsValid(state);
+    }
+  };
+  let qualityEl = document.getElementById("quality");
+  console.log(quality);
+  qualityEl.oninput = e => {
+    state.priceValid = checkValidity(priceEl.value);
+    state.nameValid = checkValidity(nameEl.value);
+    state.sizeValid = checkValidity(sizeEl.value);
+    state.qualityValid = checkValidity(qualityEl.value);
+    var text2 = $("#description").val();
+    state.descriptionValid = checkValidity(text2);
+    let file = "";
+    if (imageEl.files.length > 0) {
+      console.log(imageEl.files.length);
+      file = "12";
+      state.imageValid = checkValidity(imageEl.files);
+      areAllFieldsValid(state);
+    }
+  };
+  //TODO: find the way on how to listen description and image changes
+  textareaFunc = () => {
+    var text2 = $("#description").val();
+    state.priceValid = checkValidity(priceEl.value);
+    state.nameValid = checkValidity(nameEl.value);
+    state.sizeValid = checkValidity(sizeEl.value);
+    state.qualityValid = checkValidity(qualityEl.value);
+    var text2 = $("#description").val();
+    state.descriptionValid = checkValidity(text2);
+    let file = "";
+    if (imageEl.files.length > 0) {
+      console.log(imageEl.files.length);
+      file = "12";
+      state.imageValid = checkValidity(imageEl.files);
+      areAllFieldsValid(state);
+    }
+  };
+
+  let imageEl = document.getElementById("image");
+  imageEl.oninput = e => {
+    state.priceValid = checkValidity(priceEl.value);
+    state.nameValid = checkValidity(nameEl.value);
+    state.sizeValid = checkValidity(sizeEl.value);
+    state.qualityValid = checkValidity(qualityEl.value);
+    var text2 = $("#description").val();
+    state.descriptionValid = checkValidity(text2);
+    let file = "";
+    if (imageEl.files.length > 0) {
+      console.log(imageEl.files.length);
+      file = "12";
+      state.imageValid = checkValidity(imageEl.files);
+      areAllFieldsValid(state);
+    }
+  };
+</script>
