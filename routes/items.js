@@ -79,7 +79,9 @@ router.get("/shopItem/:itemId", (req, res, next) => {
   const id = req.params.itemId;
   Item.findById(id)
     .select("name size quality description price itemImage userId")
-  .then(doc => res.status(201).json(doc));
+    .then(doc => 
+      res.status(201).json(doc)
+    );
 });
 
 router.get("/shopItems", (req, res) => {
@@ -87,6 +89,7 @@ router.get("/shopItems", (req, res) => {
     .select("name size quality description price itemImage")
     .then(docs => {
       res.send(docs);
+      console.log(docs);
       //if(docs.length>=0){
     });
   //}else{
@@ -127,22 +130,32 @@ router.get("/shopItemsCreatedByUser", ensureAuthenticated, (req, res) => {
   // });
   //}
 });
-router.post("/updatedItem/:itemId", ensureAuthenticated,  upload.single("itemImage"), (req, res, next) => {
-  const id = req.params.itemId;
-  Item.findOneAndUpdate({_id:id}, { 
-    name:req.body.name,
-    size: req.body.size,
-    quality: req.body.quality,
-    price: req.body.price,
-    description: req.body.description,
-    itemImage: req.file.path
-  } , {new: true},(error, item)=>{
-    if (error){
-      res.send(error)
-    }
-   res.redirect('/dashboard/shop');
-})
-});
+router.post(
+  "/updatedItem/:itemId",
+  ensureAuthenticated,
+  upload.single("itemImage"),
+  (req, res, next) => {
+    const id = req.params.itemId;
+    Item.findOneAndUpdate(
+      { _id: id },
+      {
+        name: req.body.name,
+        size: req.body.size,
+        quality: req.body.quality,
+        price: req.body.price,
+        description: req.body.description,
+        itemImage: req.file.path
+      },
+      { new: true },
+      (error, item) => {
+        if (error) {
+          res.send(error);
+        }
+        res.redirect("/dashboard/shop");
+      }
+    );
+  }
+);
 //delete
 router.delete("/delete/:itemId", (req, res, next) => {
   const id = req.params.itemId;
@@ -159,6 +172,7 @@ router.get("/updateItem/:itemId", (req, res) => {
   Item.findById(id)
     .select("name size quality description price itemImage userId")
     .then(doc => {
+      console.log(doc)
       res.send(doc);
     })
     .catch(err => {
