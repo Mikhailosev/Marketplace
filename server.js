@@ -13,6 +13,8 @@ require("dotenv").config();
 const morgan=require('morgan')
 //PATH TO ITEM CONTROLLER
 const itemController = require("./routes/items")
+const render = require("./routes/render")
+
 const sslkey = fs.readFileSync("certificate/ssl-key.pem");
 const sslcert = fs.readFileSync("certificate/ssl-cert.pem");
 //PASSPORT CONFIG
@@ -75,6 +77,8 @@ app.use(express.static(__dirname + "/public"));
 app.use("/", require("./routes/index"));
 app.use("/users", require("./routes/users"));
 app.use("/dashboard", itemController);
+app.use("/dashboard", render);
+
 
 
 const http = express();

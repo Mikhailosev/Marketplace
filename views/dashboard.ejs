@@ -21,8 +21,6 @@
     <div id="navMenu" class="navbar-menu has-text-centered">
       <div class="navbar-end">
         <a href="/dashboard/items" class="navbar-item">Sell an item</a>
-        <a href="#" class="navbar-item">Blog</a>
-        <a href="#" class="navbar-item">Forum</a>
         <a href="/dashboard/shop" class="navbar-item">Shop</a>
         <a href="/users/logout" class="navbar-item">Log Out of <%= user %></a>
       </div>
@@ -46,7 +44,7 @@
         </h2>
         <br />
         <p class="has-text-centered">
-          <a href="/dashboard/shop" id="button2" class="button is-medium is-primary is-outlined">
+          <a onclick="renderShop()" id="button2" class="button is-medium is-primary is-outlined">
             Go to the shop
           </a>
           <a class="button is-medium is-info is-outlined">
@@ -57,3 +55,8 @@
     </div>
   </div>
 </div>
+<script type="text/javascript">
+renderShop=()=>{
+ render("shop");
+}
+</script>
