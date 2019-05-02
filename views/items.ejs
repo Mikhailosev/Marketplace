@@ -30,7 +30,7 @@
     </div>
 </nav>
 <section class="section">
-  <form action="/dashboard/shopItemAdd" method="POST" autocomplete="off" enctype="multipart/form-data">
+  <form enctype="multipart/form-data" id="postForm" >
       <div class="columns">
         <div class="column is-4 is-offset-4">
           <% include ./partials/messages %>
@@ -117,14 +117,12 @@
   
           <div class="field is-grouped">
             <div class="control">
-              <a href="/dashboard/shop">
                 <button
                 id="b"
-                  type="submit"
+                onclick="dataLoad()"
                   class="button is-large is-primary  btn-primary btn-block" disabled="true">
-                   Submit 
+                   <a href="/dashboard/shop">Submit</a> 
               </button>   
-            </a>
                 </form>
               
             <button id="submitButton" class="button is-large is-success">
@@ -138,6 +136,17 @@
     </form>
   </section>
   <script>
+    dataLoad=()=>{
+    const xhrPost=new XMLHttpRequest()
+      xhrPost.open("POST", "/dashboard/shopItemAdd")
+    const data=new FormData(document.getElementById("postForm"));
+    xhrPost.onload=(res)=>{
+console.log(res)
+    }
+  xhrPost.send(data)
+}
+ 
+   
        let state = {
     nameValid: false,
     sizeValid: false,

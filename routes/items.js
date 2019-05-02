@@ -63,8 +63,7 @@ router.post(
     item
       .save()
       .then(result => {
-        console.log(result);
-        res.json(result);
+        res.send(result);
       })
       .catch(err => {
         console.log(err);
@@ -72,7 +71,6 @@ router.post(
           error: err
         });
       });
-    res.redirect("/dashboard/shop");
   }
 );
 router.get("/shopItem/:itemId", (req, res, next) => {
@@ -89,7 +87,6 @@ router.get("/shopItems", (req, res) => {
     .select("name size quality description price itemImage")
     .then(docs => {
       res.send(docs);
-      console.log(docs);
       //if(docs.length>=0){
     });
   //}else{
@@ -151,13 +148,14 @@ router.post(
         if (error) {
           res.send(error);
         }
-        res.redirect("/dashboard/shop");
       }
-    );
+    ).then(result => {
+      res.send(result);
+    })
   }
 );
 //delete
-router.delete("/delete/:itemId", (req, res, next) => {
+router.delete("/delete/:itemId", ensureAuthenticated, (req, res, next) => {
   const id = req.params.itemId;
   Item.deleteOne({
     _id: id
@@ -166,13 +164,12 @@ router.delete("/delete/:itemId", (req, res, next) => {
     //if(docs.length>=0){
   });
 });
-
-router.get("/updateItem/:itemId", (req, res) => {
+//get the item information
+router.get("/updateItem/:itemId", ensureAuthenticated, (req, res) => {
   const id = req.params.itemId;
   Item.findById(id)
     .select("name size quality description price itemImage userId")
     .then(doc => {
-      console.log(doc)
       res.send(doc);
     })
     .catch(err => {
@@ -185,9 +182,13 @@ router.get("/updateItem/:itemId", (req, res) => {
 router.get("/shop", (req, res) => {
   res.render("shop");
 });
+//get the link with item information to update
+
 router.get("/update/:itemId", ensureAuthenticated, (req, res) => {
   res.render("updateItem");
 });
+//get the link with item informatio
+
 router.get("/singleItem/:itemId", (req, res) => {
   res.render("singleItem");
 });

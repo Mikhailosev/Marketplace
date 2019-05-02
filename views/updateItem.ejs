@@ -31,7 +31,7 @@
         </div>
       </nav>
       <section class="section">
-            <form action="" method="POST" id="form"autocomplete="off" enctype="multipart/form-data">
+            <form id="postForm" enctype="multipart/form-data">
                 <div class="columns">
                   <div class="column is-4 is-offset-4">
                     <% include ./partials/messages %>
@@ -118,15 +118,12 @@
             
                     <div class="field is-grouped">
                       <div class="control">
-                        <a href="/dashboard/shop">
                           <button
                           id="b"
-                          onclick="redirect()"
-                            type="submit"
+                          onclick="dataLoad()"
                             class="button is-large is-primary  btn-primary btn-block" disabled="true">
-                             Submit 
+                             <a href="/dashboard/shop">Submit</a> 
                         </button>   
-                      </a>
                           </form>
                         
                       <button id="submitButton" class="button is-large is-success">
@@ -156,7 +153,7 @@ let end=`${window.location.pathname.split("/").pop()}`
 
     $('#name').val(`${myData.name}`);
     $('#size').val(`${myData.size}`);
-    $('#price').val(`${myData.price}`);
+    $('#price').val(`${myData.name}`);
     $('#quality').val(`${myData.quality}`);
     $('#description').val(`${myData.description}`)  ;
     $('#form').attr('action', `/dashboard/updatedItem/${myData._id}` )
@@ -164,6 +161,15 @@ let end=`${window.location.pathname.split("/").pop()}`
 
 
   };
+  dataLoad=()=>{
+    const xhrPost=new XMLHttpRequest()
+    let end=`${window.location.pathname.split("/").pop()}`
+      xhrPost.open("POST", "/dashboard/updatedItem/"+end)
+    const data=new FormData(document.getElementById("postForm"));
+    xhrPost.onload=(res)=>{
+    }
+  xhrPost.send(data)
+}
   myReq.send();
   let state = {
     nameValid: false,
