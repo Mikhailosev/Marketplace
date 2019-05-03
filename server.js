@@ -1,5 +1,4 @@
 const express = require("express");
-const https = require("https");
 const fs = require("fs");
 require("./models/Item");
 const flash = require("connect-flash");
@@ -15,8 +14,6 @@ const morgan=require('morgan')
 const itemController = require("./routes/items")
 const render = require("./routes/render")
 
-const sslkey = fs.readFileSync("certificate/ssl-key.pem");
-const sslcert = fs.readFileSync("certificate/ssl-cert.pem");
 //PASSPORT CONFIG
 require("./config/passport")(passport);
 let app = express();
@@ -81,24 +78,8 @@ app.use("/dashboard", render);
 
 
 
-const http = express();
-const options = {
-  key: sslkey,
-  cert: sslcert
-};
 
-http.use((req, res, next) => {
-  if (req.secure) {
-    // request was via https, so do no special handling
-    next();
-  } else {
-    // request was via http, so redirect to https
-    res.redirect("https://localhost:3001/");
-  }
-});
-
-http.listen(process.env.PORT);
+app.listen(process.env.PORT);
 console.log("got to http");
-https.createServer(options, app).listen(process.env.PORTS);
 console.log("redirected");
 console.log(`server started on ${process.env.PORTS}`);
