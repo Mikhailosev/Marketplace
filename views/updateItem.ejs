@@ -110,6 +110,7 @@
                         <label class="label">Image</label>
                       <div class="control">
                         <input id="image" value="" type='file' name="itemImage">
+                        <p>Image should be png/jpeg/jpg</p>
                       </div>
                     </div>
                     <div class="field">
@@ -119,7 +120,6 @@
                         <a
                         style="pointer-events: none; cursor: default"
                         id="b"
-                        href="/dashboard/shop"
                         onclick="dataLoad()"
                           class="button is-large is-primary  btn-primary btn-block">
                            Submit
@@ -167,6 +167,7 @@ let end=`${window.location.pathname.split("/").pop()}`
       xhrPost.open("POST", "/dashboard/updatedItem/"+end)
     const data=new FormData(document.getElementById("postForm"));
     xhrPost.onload=(res)=>{
+      window.location.href="/dashboard/shop"
     }
   xhrPost.send(data)
 }

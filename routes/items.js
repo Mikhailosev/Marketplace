@@ -15,7 +15,11 @@ const fileFilter = (req, file, cb) => {
   if (
     file.mimetype === "image/jpeg" ||
     file.mimetype === "image/jpg" ||
-    file.mimetype === "image/png"
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/bmp" ||
+    file.mimetype === "	image/gif" ||
+    file.mimetype === "image/svg+xml" ||
+    file.mimetype === "image/tiff" 
   ) {
     cb(null, true);
   } else {
@@ -25,7 +29,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 4000 * 4000 * 10 },
+  limits: { fileSize:4000 * 4000 * 10 },
   fileFilter: fileFilter
 });
 
@@ -59,10 +63,13 @@ router.post(
       description: req.body.description,
       itemImage: req.file.path,
       userId: req.user._id
-    });
+    }
+    );
     item
       .save()
       .then(result => {
+        console.log(req.file.size)
+
         res.send(result);
       })
       .catch(err => {
