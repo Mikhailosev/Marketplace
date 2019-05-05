@@ -4,7 +4,7 @@ Marketplace is a project made as a final project for Server-Side-Scripting Frame
 by    Mikhail Losev
 ## Deployed version for demo
 
-**https://marketplacemilo.jelastic.metropolia.fi/dashboard/shop**
+**https://marketplacemilo.jelastic.metropolia.fi**
 
 ## Installation
 
