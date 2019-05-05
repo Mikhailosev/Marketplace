@@ -2,6 +2,10 @@
 
 Marketplace is a project made as a final project for Server-Side-Scripting Frameworks on spring semester of 2019  Metropolia University of Applied Sciences, Finland  
 by    Mikhail Losev
+## Deployed version for demo
+
+**https://marketplacemilo.jelastic.metropolia.fi/dashboard/shop**
+
 ## Installation
 
 You have to have NodeJS, MongoDB preinstalled to run and test it
